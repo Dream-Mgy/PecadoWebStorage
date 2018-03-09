@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.dao.LocalFileDao">
+
+    <select id="seleceFiles" resultType="com.neusoft.pojos.LocalFile">
+        SELECT `id`, `file_name`, `file_size`, `create_time` FROM `local_file` WHERE 1=1 
+        <if test="searchKey != ''">
+            AND `file_name` LIKE CONCAT('%','${searchKey}','%' ) 
+        </if>
+        ORDER BY `create_time` DESC LIMIT #{pagination.offset} , #{pagination.pageSize}
+    </select>
+
+    <select id="selectOne" resultType="com.neusoft.pojos.LocalFile">
+        SELECT `id`, `file_name`, `file_size`, `create_time` FROM `local_file` WHERE
+        `id` = #{fileId}
+    </select>
+
+    <select id="getFileCount" resultType="int">
+        SELECT count(*) FROM `local_file` WHERE 1=1
+        <if test="_parameter != ''">
+            AND `file_name` LIKE CONCAT('%',#{searchKey},'%' ) 
+        </if>
+    </select>
+
+    <insert id="insertFiles" parameterType="com.neusoft.pojos.LocalFile">
+        INSERT INTO `local_file` (`file_name`, `file_size`) VALUES
+        <foreach item="item" collection="list" separator=",">
+            (#{item.fileName}, #{item.fileSize})
+        </foreach>
+    </insert>
+
+</mapper>
